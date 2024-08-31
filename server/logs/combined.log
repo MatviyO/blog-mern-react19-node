@@ -1,0 +1,6 @@
+2024-08-31T06:55:29.237Z [[32minfo[39m]: HTTP POST /auth/login
+2024-08-31T06:58:40.871Z [[31merror[39m]: middlewareError
+2024-08-31T06:58:40.874Z [[32minfo[39m]: HTTP POST /posts
+2024-08-31T06:58:50.366Z [[32minfo[39m]: HTTP POST /posts
+2024-08-31T06:59:22.203Z [[32minfo[39m]: HTTP POST /posts
+2024-08-31T07:01:17.084Z [[32minfo[39m]: HTTP GET /posts
