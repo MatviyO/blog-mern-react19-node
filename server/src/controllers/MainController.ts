@@ -5,10 +5,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const router = express.Router();
+const MainController = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
+MainController.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
-export default router;
+export default MainController;

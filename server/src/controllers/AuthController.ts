@@ -1,16 +1,17 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
-import { validationResult } from 'express-validator';
 
 import UserModel from '../models/User.ts';
 import {loginValidation, registerValidation} from '../validators/AuthValidation.ts';
-import { checkAuth } from '../utils/chechAuth.ts';
+import { authenticationGuard } from '../utils/authenticationGuard.ts';
 import { handleUserNotFound } from '../utils/responseHelpers.ts';
+import {ValidationErrorsMiddleware} from "../middlewares/validationErrorsMiddleware.ts";
 
-const router = express.Router();
+const AuthController = express.Router();
 
-router.post('/login', loginValidation, async (req: Request, res: Response) => {
+// explanation: first we check validation with express-validator and after parse errors by ValidationErrorsMiddleware
+AuthController.post('/login', loginValidation, ValidationErrorsMiddleware, async (req: Request, res: Response) => {
     try {
         const user = await UserModel.findOne({ email: req.body.email });
         if (!user) {
@@ -45,13 +46,8 @@ router.post('/login', loginValidation, async (req: Request, res: Response) => {
     }
 });
 
-router.post('/register', registerValidation, async (req: Request, res: Response) => {
+AuthController.post('/register', registerValidation, ValidationErrorsMiddleware, async (req: Request, res: Response) => {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
         const salt = bcrypt.genSaltSync(10);
         const passwordHash = bcrypt.hashSync(req.body.password, salt);
 
@@ -81,7 +77,7 @@ router.post('/register', registerValidation, async (req: Request, res: Response)
     }
 });
 
-router.post('/getUser', checkAuth, async (req: Request, res: Response) => {
+AuthController.post('/getUser', authenticationGuard, async (req: Request, res: Response) => {
     try {
         const user = await UserModel.findById((req as any)?.userId);
         if (!user) {
@@ -105,4 +101,4 @@ router.post('/getUser', checkAuth, async (req: Request, res: Response) => {
     }
 });
 
-export default router;
+export default AuthController;

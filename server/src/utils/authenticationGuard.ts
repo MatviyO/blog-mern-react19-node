@@ -1,12 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jsonwebtoken from "jsonwebtoken";
+import {JwtPayload} from "../core/types/IJwtPayload.ts";
 
-interface JwtPayload {
-    email: string;
-    id: string;
-}
-
-export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticationGuard = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) {

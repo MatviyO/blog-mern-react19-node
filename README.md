@@ -24,6 +24,7 @@ Welcome to the **Blog-MERN-React19-Node** project! This is a modern web applicat
 - **MongoDB**: Store data in a flexible, document-based NoSQL database with MongoDB.
 - **bcrypt**: Securely hash passwords for user authentication with bcrypt.
 - **Express-validator**: Validations for controllers.
+- **Multer**: lib for upload image.
 
 ## Technologies Used
 
