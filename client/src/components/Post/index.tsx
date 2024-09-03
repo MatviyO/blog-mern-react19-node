@@ -37,7 +37,7 @@ export const Post: FC<PostProps> = ({
   isEditable,
   commentsCount,
 }) => {
-  const { _id, title, createdAt, imageUrl, user, viewsCount, tags } = item;
+  const { _id, title, createdAt, imageUrl, author, viewsCount, tags } = item;
   if (isLoading) {
     return <PostSkeleton />;
   }
@@ -66,7 +66,7 @@ export const Post: FC<PostProps> = ({
         />
       )}
       <div className={styles.wrapper}>
-        <UserInfo {...user} additionalText={createdAt} />
+        <UserInfo {...author} additionalText={createdAt} />
         <div className={styles.indention}>
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
