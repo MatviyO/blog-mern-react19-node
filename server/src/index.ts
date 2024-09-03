@@ -11,6 +11,7 @@ import multer from 'multer';
 import {authenticationGuard} from "./utils/authenticationGuard.ts";
 import {ValidationErrorsMiddleware} from "./middlewares/validationErrorsMiddleware.ts";
 import {AuthController, PostController, MainController} from "./controllers/index.ts";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -30,6 +31,8 @@ const storage = multer.diskStorage({
     },
 })
 const upload = multer({ storage });
+
+app.use(cors());
 
 //logger request
 app.use(expressWinston.logger({
