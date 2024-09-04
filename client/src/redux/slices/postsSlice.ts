@@ -3,6 +3,7 @@ import { FetchPostsResponse } from "../services/posts/postsType";
 import Api from "../../cores/services/axiosService";
 import { IPost } from "../../cores/types/IPost";
 
+// Async thunk for fetching posts
 export const fetchPosts = () =>
   createAsyncThunk("posts/fetchPosts", async () => {
     const { data } = await Api.get<FetchPostsResponse>("/posts");
@@ -11,13 +12,13 @@ export const fetchPosts = () =>
 // how use: dispatch(fetchPosts())
 
 type TPostsState = {
-  posts: IPost[];
+  items: IPost[];
   status: string;
   error: string;
 };
 
 const initialState: TPostsState = {
-  posts: [],
+  items: [],
   status: "",
   error: "",
 };
@@ -26,14 +27,14 @@ const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<{ id: string; name: string }>) {},
+    setPosts(state, action: PayloadAction<{ id: string; name: string }>) {},
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.posts = action.payload.result;
+    builder.addCase(fetchPosts.pending, (state, action) => {
+      state.items = action.payload.result;
     });
   },
 });
 
-export const { setUser } = postsSlice.actions;
+export const { setPosts } = postsSlice.actions;
 export const postsReducer = postsSlice.reducer;
