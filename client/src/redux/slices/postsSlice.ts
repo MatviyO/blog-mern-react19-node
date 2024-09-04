@@ -30,9 +30,18 @@ const postsSlice = createSlice({
     setPosts(state, action: PayloadAction<{ id: string; name: string }>) {},
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchPosts.pending, (state, action) => {
-      state.items = action.payload.result;
-    });
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<FetchPostsResponse>) => {
+        state.status = "succeeded";
+        state.items = action.payload.result;
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Something went wrong";
+      });
   },
 });
 
