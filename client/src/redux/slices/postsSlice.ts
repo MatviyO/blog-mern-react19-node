@@ -4,11 +4,10 @@ import Api from "../../cores/services/axiosService";
 import { IPost } from "../../cores/types/IPost";
 
 // Async thunk for fetching posts
-export const fetchPosts = () =>
-  createAsyncThunk("posts/fetchPosts", async () => {
-    const { data } = await Api.get<FetchPostsResponse>("/posts");
-    return data;
-  });
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+  const { data } = await Api.get<FetchPostsResponse>("/posts");
+  return data;
+});
 // how use: dispatch(fetchPosts())
 
 type TPostsState = {
