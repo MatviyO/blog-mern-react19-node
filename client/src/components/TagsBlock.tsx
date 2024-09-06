@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -9,30 +9,28 @@ import ListItemText from "@mui/material/ListItemText";
 import Skeleton from "@mui/material/Skeleton";
 
 import { SideBlock } from "./SideBlock";
+import { useFetchTagsQuery } from "../redux/services/tags/tagsApi";
 
-export const TagsBlock = ({ items, isLoading = true }) => {
+type Props = {};
+export const TagsBlock: FC<Props> = () => {
+  const { data: items, isLoading } = useFetchTagsQuery();
   return (
-    <SideBlock title="Тэги">
+    <SideBlock title="Tags">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined, i: React.Key | null | undefined) => (
-          <a
-            style={{ textDecoration: "none", color: "black" }}
-            href={`/tags/${name}`}
-          >
-            <ListItem key={i} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <TagIcon />
-                </ListItemIcon>
-                {isLoading ? (
-                  <Skeleton width={100} />
-                ) : (
-                  <ListItemText primary={name} />
-                )}
-              </ListItemButton>
-            </ListItem>
-          </a>
-        ))}
+        {isLoading
+          ? [...Array(5)]
+          : items?.map((name: string, i: React.Key) => (
+              <a style={{ textDecoration: "none", color: "black" }} href={`/tags/${name}`}>
+                <ListItem key={i} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <TagIcon />
+                    </ListItemIcon>
+                    {isLoading ? <Skeleton width={100} /> : <ListItemText primary={name} />}
+                  </ListItemButton>
+                </ListItem>
+              </a>
+            ))}
       </List>
     </SideBlock>
   );
