@@ -3,7 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
 
-import { TagsBlock, CommentsBlock } from "../components";
+import { TagsBlock } from "../components";
 import { PostsList } from "../components/pages/posts/PostsList";
 
 export const Home = (): JSX.Element => {
@@ -16,7 +16,7 @@ export const Home = (): JSX.Element => {
       <Grid container spacing={4}>
         <PostsList />
         <Grid xs={4} item>
-          <TagsBlock items={["react", "typescript", "notions"]} isLoading={false} />
+          <TagsBlock />
           {/* <CommentsBlock */}
           {/*  items={[ */}
           {/*    { */}

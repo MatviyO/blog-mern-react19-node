@@ -1,40 +1,27 @@
-import {FC, JSX} from "react";
+import { FC, JSX } from "react";
 
-import { Post } from "../components/Post";
-import { Index } from "../components/AddComment";
-import { CommentsBlock } from "../components/CommentsBlock";
+import { useParams } from "react-router-dom";
+import { Post, Index, CommentsBlock } from "../components";
+import { useFetchPostByIdQuery } from "../redux/services/posts/postsApi";
 
 export const FullPost: FC = (): JSX.Element => {
+  const params = useParams();
+
+  const { data, isLoading } = useFetchPostByIdQuery(params?.id || "");
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!data) return <div>No data</div>;
+
   return (
     <>
-      <Post
-        id={1}
-        title="Roast the code #1 | Rock Paper Scissors"
-        imageUrl="https://res.cloudinary.com/practicaldev/image/fetch/s--UnAfrEG8--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/icohm5g0axh9wjmu4oc3.png"
-        user={{
-          avatarUrl:
-            "https://res.cloudinary.com/practicaldev/image/fetch/s--uigxYVRB--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/187971/a5359a24-b652-46be-8898-2c5df32aa6e0.png",
-          fullName: "Keff",
-        }}
-        createdAt={"12 июня 2022 г."}
-        viewsCount={150}
-        commentsCount={3}
-        tags={["react", "fun", "typescript"]}
-        isFullPost
-      >
-        <p>
-          Hey there! 👋 I'm starting a new series called "Roast the Code", where
-          I will share some code, and let YOU roast and improve it. There's not
-          much more to it, just be polite and constructive, this is an exercise
-          so we can all learn together. Now then, head over to the repo and
-          roast as hard as you can!!
-        </p>
+      <Post item={data} commentsCount={3} isLoading={isLoading} isFullPost>
+        <p>{data?.description}</p>
       </Post>
       <CommentsBlock
         items={[
           {
             user: {
-                fullName: "Lora D ",
+              fullName: "Lora D ",
               avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
             },
             text: "hen displaying three lines or m",

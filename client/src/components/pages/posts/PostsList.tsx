@@ -5,7 +5,6 @@ import { useFetchPostsQuery } from "../../../redux/services/posts/postsApi";
 
 export const PostsList = (): JSX.Element => {
   const { data, isLoading } = useFetchPostsQuery();
-  console.log(data, "data");
 
   return (
     <Grid xs={8} item>

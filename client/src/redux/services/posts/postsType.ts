@@ -4,3 +4,7 @@ import { IBaseResponse } from "../../../cores/types/IBaseResponse";
 export interface FetchPostsResponse extends IBaseResponse {
   result: IPost[];
 }
+
+export interface FetchPostResponse extends IBaseResponse {
+  result: IPost;
+}
