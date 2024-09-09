@@ -4,14 +4,13 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import expressWinston from 'express-winston';
-
+import cors from 'cors';
+import multer from 'multer';
 
 import logger from './logger/winstonLogger.ts';
-import multer from 'multer';
 import {authenticationGuard} from "./utils/authenticationGuard.ts";
 import {ValidationErrorsMiddleware} from "./middlewares/validationErrorsMiddleware.ts";
-import {AuthController, PostController, MainController} from "./controllers/index.ts";
-import cors from 'cors';
+import {AuthController, PostController, MainController, TagsController} from "./controllers/index.ts";
 
 dotenv.config();
 
@@ -48,6 +47,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/', MainController);
 app.use('/auth', AuthController);
 app.use('/posts', PostController);
+app.use('/tags', TagsController);
+
 //get files from uploads folder
 app.use('/uploads', express.static('uploads'));
 
