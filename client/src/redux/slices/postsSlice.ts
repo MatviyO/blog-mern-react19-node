@@ -45,4 +45,5 @@ const postsSlice = createSlice({
 });
 
 export const { setPosts } = postsSlice.actions;
+export const postsSliceAction = postsSlice.actions;
 export const postsReducer = postsSlice.reducer;
