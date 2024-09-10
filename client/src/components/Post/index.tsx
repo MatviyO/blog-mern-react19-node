@@ -38,6 +38,7 @@ export const Post: FC<PostProps> = ({
   commentsCount,
 }) => {
   const { _id, title, createdAt, imageUrl, author, viewsCount, tags } = item;
+  console.log(item, "viewsCount")
   if (isLoading) {
     return <PostSkeleton />;
   }
@@ -72,7 +73,7 @@ export const Post: FC<PostProps> = ({
             {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
           </h2>
           <ul className={styles.tags}>
-            {tags.map((name) => (
+            {tags?.map((name) => (
               <li key={name}>
                 <Link to={`/tag/${name}`}>#{name}</Link>
               </li>
