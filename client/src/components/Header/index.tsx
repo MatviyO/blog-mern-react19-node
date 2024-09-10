@@ -1,14 +1,22 @@
-import React from 'react';
-import Button from '@mui/material/Button';
+import React from "react";
+import Button from "@mui/material/Button";
 
-import styles from './Header.module.scss';
-import Container from '@mui/material/Container';
-import {Link} from "react-router-dom";
+import Container from "@mui/material/Container";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import styles from "./Header.module.scss";
+import { AppDispatch, useTypedSelector } from "../../redux/store";
+import { logout } from "../../redux/slices/userSlice";
 
 export const Header = () => {
-  const isAuth = false;
+  const dispatch = useDispatch<AppDispatch>();
+  const app = useTypedSelector((state) => state.user);
 
-  const onClickLogout = () => {};
+  const onClickLogout = () => {
+    dispatch(logout());
+    window.location.href = "/";
+    window.localStorage.removeItem("user");
+  };
 
   return (
     <div className={styles.root}>
@@ -18,7 +26,7 @@ export const Header = () => {
             <div>Matvii Oleh</div>
           </Link>
           <div className={styles.buttons}>
-            {isAuth ? (
+            {app.user ? (
               <>
                 <Link to="/posts/create">
                   <Button variant="contained">Write article</Button>

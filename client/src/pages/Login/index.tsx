@@ -3,22 +3,19 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.scss";
-import { IUserLogin } from "../../redux/slices/userType";
+import { FetchLoginResponseDispatch, IUserLogin } from "../../redux/types/userType";
 import { fetchUserLogin } from "../../redux/slices/userSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-
-const loginSchema = z.object({
-  email: z.string().email("Write correct email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+import { useAsyncAction } from "../../hooks/useAsyncAction";
+import { loginSchema } from "../../cores/schemas/loginSchema";
 
 export const Login: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const { executeAction } = useAsyncAction<FetchLoginResponseDispatch>();
+
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -32,8 +29,12 @@ export const Login: FC = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data: IUserLogin) => {
-    dispatch(fetchUserLogin(data));
+  const onSubmit = async (data: IUserLogin) => {
+    const res = (await executeAction(fetchUserLogin(data))) as FetchLoginResponseDispatch;
+    if (res?.payload) {
+      window.localStorage.setItem("user", JSON.stringify(res?.payload?.result));
+      navigate("/");
+    }
   };
 
   return (
