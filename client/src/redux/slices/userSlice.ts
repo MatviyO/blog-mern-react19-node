@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "../../cores/services/axiosService";
 import { FetchLoginResponse, IUserLogin } from "../types/userType";
+import { handleFulfilled, handlePending, handleRejected } from "../helpers/handlerStatuses";
 
 export const fetchUserLogin = createAsyncThunk("user/fetchLogin", async (form: IUserLogin) => {
   const { data } = await Api.post<FetchLoginResponse>("/auth/login", form);
@@ -40,42 +41,17 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserLogin.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchUserLogin.fulfilled, (state, action: PayloadAction<FetchLoginResponse>) => {
-        state.status = "succeeded";
-        state.user = action.payload.result;
-        state.error = "";
-      })
-      .addCase(fetchUserLogin.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Something went wrong";
-      })
-      .addCase(fetchGetMe.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchGetMe.fulfilled, (state, action: PayloadAction<FetchLoginResponse>) => {
-        state.status = "succeeded";
-        state.user = action.payload.result;
-        state.error = "";
-      })
-      .addCase(fetchGetMe.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Something went wrong";
-      })
-      .addCase(fetchUserRegister.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchUserRegister.fulfilled, (state, action: PayloadAction<FetchLoginResponse>) => {
-        state.status = "succeeded";
-        state.user = action.payload.result;
-        state.error = "";
-      })
-      .addCase(fetchUserRegister.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Something went wrong";
-      });
+      .addCase(fetchUserLogin.pending, handlePending)
+      .addCase(fetchUserLogin.fulfilled, handleFulfilled)
+      .addCase(fetchUserLogin.rejected, handleRejected)
+
+      .addCase(fetchGetMe.pending, handlePending)
+      .addCase(fetchGetMe.fulfilled, handleFulfilled)
+      .addCase(fetchGetMe.rejected, handleRejected)
+
+      .addCase(fetchUserRegister.pending, handlePending)
+      .addCase(fetchUserRegister.fulfilled, handleFulfilled)
+      .addCase(fetchUserRegister.rejected, handleRejected);
   },
 });
 export const { logout } = userSlice.actions;
