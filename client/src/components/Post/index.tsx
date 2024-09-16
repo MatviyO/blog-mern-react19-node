@@ -38,6 +38,7 @@ export const Post: FC<PostProps> = ({
   commentsCount,
 }) => {
   const { _id, title, createdAt, imageUrl, author, viewsCount, tags } = item;
+
   if (isLoading) {
     return <PostSkeleton />;
   }
