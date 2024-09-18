@@ -11,3 +11,10 @@ export interface IPost {
   updatedAt: string;
   imageUrl?: string;
 }
+
+export interface IPostForm {
+  _id?: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+}

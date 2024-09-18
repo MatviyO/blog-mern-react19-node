@@ -11,8 +11,13 @@ export const PostsList = (): JSX.Element => {
   return (
     <Grid xs={8} item>
       {data?.map((item) => (
-        // eslint-disable-next-line no-underscore-dangle
-        <Post key={item._id} item={item} commentsCount={item?.viewsCount} isLoading={isLoading} isEditable={!!app.user} />
+        <Post
+          key={item._id}
+          item={item}
+          commentsCount={item?.viewsCount}
+          isLoading={isLoading}
+          isEditable={!!app.user}
+        />
       ))}
     </Grid>
   );
