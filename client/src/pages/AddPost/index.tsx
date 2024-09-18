@@ -45,8 +45,8 @@ export const AddPost: FC = () => {
       }
       formData.append("file", file);
       const { data } = await Api.post("/upload", formData);
-      setValue("imageUrl", data?.url || "");
-      setImageUrl(data?.url || "");
+      setValue("imageUrl", data?.result?.url || "");
+      setImageUrl(data?.result?.url || "");
     } catch (error) {
       console.warn(`Upload Error ${error}`);
     }
@@ -96,7 +96,7 @@ export const AddPost: FC = () => {
             <Button variant="contained" color="error" onClick={onClickRemoveImage}>
               Remove
             </Button>
-            <img className={styles.image} src={`http://localhost:4444${imageUrl}`} alt="Uploaded" />
+            <img className={styles.image} src={imageUrl} alt="Uploaded" />
           </>
         )}
         <br />

@@ -77,7 +77,8 @@ AuthController.post('/register', registerValidation, ValidationErrorsMiddleware,
     }
 });
 
-AuthController.post('/getUser', authenticationGuard, async (req: Request, res: Response) => {
+AuthController.get('/getUser', authenticationGuard, async (req: Request, res: Response) => {
+    console.log("call")
     try {
         const user = await UserModel.findById((req as any)?.userId);
         if (!user) {
