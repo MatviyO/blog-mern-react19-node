@@ -1,4 +1,4 @@
-import React, { FC, SetStateAction, useMemo, useState } from "react";
+import React, { FC, useMemo, useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -7,32 +7,55 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./AddPost.module.scss";
 import { postSchema } from "../../cores/schemas/postSchema";
 import { IPostForm } from "../../cores/types/IPost";
 import { useTypedSelector } from "../../redux/store";
+import Api from "../../cores/services/axiosService";
 
 export const AddPost: FC = () => {
   const app = useTypedSelector((state) => state.user);
+  const inputFileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const imageUrl = "";
+  const [imageUrl, setImageUrl] = useState<string>("");
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors, isValid },
   } = useForm<IPostForm>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: "",
       description: "",
+      tags: "",
+      imageUrl: "",
     },
     mode: "onChange",
   });
-  const handleChangeFile = () => {};
+  const handleChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const formData = new FormData();
+      const file = event?.target?.files ? event?.target?.files[0] : null;
+      if (!file) {
+        alert("File not found");
+        return;
+      }
+      formData.append("file", file);
+      const { data } = await Api.post("/upload", formData);
+      setValue("imageUrl", data?.url || "");
+      setImageUrl(data?.url || "");
+    } catch (error) {
+      console.warn(`Upload Error ${error}`);
+    }
+  };
 
-  const onClickRemoveImage = () => {};
+  const onClickRemoveImage = () => {
+    setValue("imageUrl", "");
+    setImageUrl("");
+  };
 
   const onSubmit = async (data: IPostForm) => {
     // const res = (await executeAction(fetchUserLogin(data))) as FetchLoginResponseDispatch;
@@ -64,17 +87,17 @@ export const AddPost: FC = () => {
   return (
     <Paper style={{ padding: 30 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Button variant="outlined" size="large">
+        <Button variant="outlined" size="large" onClick={() => inputFileRef.current?.click()}>
           Upload preview
         </Button>
-        <input type="file" onChange={handleChangeFile} hidden />
+        <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
         {imageUrl && (
-          <Button variant="contained" color="error" onClick={onClickRemoveImage}>
-            Remove
-          </Button>
-        )}
-        {imageUrl && (
-          <img className={styles.image} src={`http://localhost:4444${imageUrl}`} alt="Uploaded" />
+          <>
+            <Button variant="contained" color="error" onClick={onClickRemoveImage}>
+              Remove
+            </Button>
+            <img className={styles.image} src={`http://localhost:4444${imageUrl}`} alt="Uploaded" />
+          </>
         )}
         <br />
         <br />
@@ -92,6 +115,9 @@ export const AddPost: FC = () => {
           variant="standard"
           placeholder="Tags"
           fullWidth
+          error={!!errors.tags}
+          helperText={errors.tags?.message}
+          {...register("tags", { required: true })}
         />
         <Controller
           name="description"

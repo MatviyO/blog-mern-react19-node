@@ -16,5 +16,6 @@ export interface IPostForm {
   _id?: string;
   title: string;
   description: string;
+  tags: string;
   imageUrl?: string;
 }
