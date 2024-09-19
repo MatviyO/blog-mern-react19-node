@@ -35,7 +35,7 @@ export const postsApi = createApi({
     }),
     createPost: builder.mutation<IPostForm, Partial<IPostForm>>({
       query: (newPost) => ({
-        url: "posts",
+        url: "post",
         method: "POST",
         body: newPost,
       }),

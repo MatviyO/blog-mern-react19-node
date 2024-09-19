@@ -74,8 +74,8 @@ PostController.post('', authenticationGuard, createPostValidation, ValidationErr
         const doc = new PostSchema({
             title: req.body.title,
             description: req.body.description,
-            tags: req.body.tags,
-            avatarUrl: req.body.avatarUrl,
+            tags: req.body.tags.split(',').map((tag: string) => tag.trim()),
+            imageUrl: req.body.imageUrl,
             author:(req as any)?.userId,
         });
 
@@ -111,7 +111,7 @@ PostController.patch('/:id', authenticationGuard, createPostValidation, Validati
                 title: req.body.title,
                 description: req.body.description,
                 tags: req.body.tags,
-                avatarUrl: req.body.avatarUrl,
+                imageUrl: req.body.imageUrl,
                 author:(req as any)?.userId,
             }, { new: true })
             .populate('author').exec();

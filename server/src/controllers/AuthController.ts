@@ -55,7 +55,7 @@ AuthController.post('/register', registerValidation, ValidationErrorsMiddleware,
             fullName: req.body.fullName,
             email: req.body.email,
             password: passwordHash,
-            avatarUrl: req.body.avatarUrl || ""
+            imageUrl: req.body.imageUrl || ""
         });
 
         const user = await doc.save();

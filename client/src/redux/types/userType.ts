@@ -14,7 +14,7 @@ export interface IUserRegister {
 
 export interface User {
   _id: string;
-  avatarUrl: string;
+  imageUrl: string;
   createdAt: string;
   email: string;
   fullName: string;

@@ -3,7 +3,7 @@ export interface IAuthor {
     fullName: string;
     email: string;
     password: string;
-    avatarUrl: string;
+    imageUrl: string;
     createdAt: string;
     updatedAt: string;
 }
