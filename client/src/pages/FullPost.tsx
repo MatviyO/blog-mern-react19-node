@@ -1,6 +1,7 @@
 import { FC, JSX } from "react";
 
 import { useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import { Post, Index, CommentsBlock } from "../components";
 import { useFetchPostByIdQuery } from "../redux/services/posts/postsApi";
 
@@ -15,7 +16,7 @@ export const FullPost: FC = (): JSX.Element => {
   return (
     <>
       <Post item={data} commentsCount={3} isLoading={isLoading} isFullPost>
-        <p>{data?.description}</p>
+        <ReactMarkdown>{data?.description}</ReactMarkdown>
       </Post>
       <CommentsBlock
         items={[
