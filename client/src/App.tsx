@@ -1,7 +1,6 @@
 import Container from "@mui/material/Container";
 
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
 import { Header } from "./components";
 import { AddPost, FullPost, Home, Login, Registration } from "./pages";

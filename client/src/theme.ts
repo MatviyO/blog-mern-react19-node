@@ -6,8 +6,6 @@ export const theme = createTheme({
       main: "#4361ee",
     },
   },
-  // @ts-ignore
-  shadows: ["none"],
   typography: {
     button: {
       textTransform: "none",

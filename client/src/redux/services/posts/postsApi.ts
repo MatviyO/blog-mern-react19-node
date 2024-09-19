@@ -1,12 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { FetchPostResponse, FetchPostsResponse } from "./postsType";
-import { IPost } from "../../../cores/types/IPost";
+import { IPost, IPostForm } from "../../../cores/types/IPost";
 
 export const postsApi = createApi({
   reducerPath: "postsApi",
   tagTypes: ["posts"],
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:4444/",
+    prepareHeaders: (headers) => {
+      const userL = localStorage.getItem("user");
+      if (userL) {
+        const { token } = JSON.parse(userL);
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     fetchPosts: builder.query<IPost[], void>({
@@ -25,7 +33,15 @@ export const postsApi = createApi({
       transformResponse: (response: FetchPostResponse) => response.result,
       providesTags: (result, error, id) => [{ type: "posts", id }],
     }),
+    createPost: builder.mutation<IPostForm, Partial<IPostForm>>({
+      query: (newPost) => ({
+        url: "posts",
+        method: "POST",
+        body: newPost,
+      }),
+      invalidatesTags: [{ type: "posts", id: "LIST" }],
+    }),
   }),
 });
 
-export const { useFetchPostsQuery, useFetchPostByIdQuery } = postsApi;
+export const { useFetchPostsQuery, useFetchPostByIdQuery, useCreatePostMutation } = postsApi;

@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { TUserState } from "../slices/userSlice";
 import { FetchLoginResponse } from "../types/userType";
+import { TUserState } from "../slices/userSlice";
 
 const handlePending = (state: TUserState) => {
   state.status = "loading";

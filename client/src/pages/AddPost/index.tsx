@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -8,17 +8,21 @@ import "easymde/dist/easymde.min.css";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import styles from "./AddPost.module.scss";
 import { postSchema } from "../../cores/schemas/postSchema";
 import { IPostForm } from "../../cores/types/IPost";
 import { useTypedSelector } from "../../redux/store";
 import Api from "../../cores/services/axiosService";
+import { fetchUserLogin } from "../../redux/slices/userSlice";
+import { useCreatePostMutation } from "../../redux/services/posts/postsApi";
 
 export const AddPost: FC = () => {
   const app = useTypedSelector((state) => state.user);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [createPost, { isLoading }] = useCreatePostMutation();
   const {
     register,
     handleSubmit,
@@ -58,11 +62,15 @@ export const AddPost: FC = () => {
   };
 
   const onSubmit = async (data: IPostForm) => {
-    // const res = (await executeAction(fetchUserLogin(data))) as FetchLoginResponseDispatch;
-    // if (res?.payload) {
-    //   window.localStorage.setItem("user", JSON.stringify(res?.payload?.result));
-    //   navigate("/");
-    // }
+    try {
+      const result = await createPost(data).unwrap();
+      if (result) {
+        navigate("/");
+      }
+      console.log("Post created:", result);
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    }
   };
 
   const options = useMemo(
@@ -80,9 +88,12 @@ export const AddPost: FC = () => {
     }),
     [],
   );
-  if (!app.user) {
-    navigate("/");
-  }
+
+  useEffect(() => {
+    if (!app.user) {
+      navigate("/");
+    }
+  }, [app]);
 
   return (
     <Paper style={{ padding: 30 }}>
@@ -129,8 +140,8 @@ export const AddPost: FC = () => {
           )}
         />
         <div className={styles.buttons}>
-          <Button size="large" variant="contained" disabled={!isValid}>
-            Publish
+          <Button type="submit" size="large" variant="contained" disabled={!isValid}>
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Publish"}
           </Button>
           <a href="/">
             <Button size="large">Cancel</Button>
