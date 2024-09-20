@@ -7,27 +7,35 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import styles from "./AddPost.module.scss";
 import { postSchema } from "../../cores/schemas/postSchema";
 import { IPostForm } from "../../cores/types/IPost";
 import { useTypedSelector } from "../../redux/store";
 import Api from "../../cores/services/axiosService";
-import { fetchUserLogin } from "../../redux/slices/userSlice";
-import { useCreatePostMutation } from "../../redux/services/posts/postsApi";
+import {
+  useCreatePostMutation,
+  useFetchPostByIdQuery,
+  useUpdatePostMutation,
+} from "../../redux/services/posts/postsApi";
 
 export const AddPost: FC = () => {
+  const { id } = useParams();
   const app = useTypedSelector((state) => state.user);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string>("");
   const [createPost, { isLoading }] = useCreatePostMutation();
+  const [updatePost, { isLoading: isUpdateLoading }] = useUpdatePostMutation();
+  const { data: details, isLoading: isDetailsLoading } = useFetchPostByIdQuery(id || "");
+
   const {
     register,
     handleSubmit,
     control,
     setValue,
+    reset,
     formState: { errors, isValid },
   } = useForm<IPostForm>({
     resolver: zodResolver(postSchema),
@@ -63,11 +71,17 @@ export const AddPost: FC = () => {
 
   const onSubmit = async (data: IPostForm) => {
     try {
-      const result = await createPost(data).unwrap();
-      if (result) {
-        navigate("/");
+      if (id) {
+        const result = await updatePost({ id, data }).unwrap();
+        if (result) {
+          navigate("/");
+        }
+      } else {
+        const result = await createPost(data).unwrap();
+        if (result) {
+          navigate("/");
+        }
       }
-      console.log("Post created:", result);
     } catch (error) {
       console.error("Failed to create post:", error);
     }
@@ -95,10 +109,27 @@ export const AddPost: FC = () => {
     }
   }, [app]);
 
+  useEffect(() => {
+    if (details) {
+      reset({
+        title: details.title,
+        description: details.description,
+        tags: String(details?.tags),
+        imageUrl: details.imageUrl,
+      });
+      setImageUrl(details?.imageUrl || "");
+    }
+  }, [details]);
+
   return (
     <Paper style={{ padding: 30 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Button variant="outlined" size="large" onClick={() => inputFileRef.current?.click()}>
+        <Button
+          style={{ marginRight: 20 }}
+          variant="outlined"
+          size="large"
+          onClick={() => inputFileRef.current?.click()}
+        >
           Upload preview
         </Button>
         <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
@@ -107,7 +138,12 @@ export const AddPost: FC = () => {
             <Button variant="contained" color="error" onClick={onClickRemoveImage}>
               Remove
             </Button>
-            <img className={styles.image} src={imageUrl} alt="Uploaded" />
+            <img
+              style={{ width: "100%", height: 300, objectFit: "contain" }}
+              className={styles.image}
+              src={imageUrl}
+              alt="Uploaded"
+            />
           </>
         )}
         <br />
@@ -141,7 +177,13 @@ export const AddPost: FC = () => {
         />
         <div className={styles.buttons}>
           <Button type="submit" size="large" variant="contained" disabled={!isValid}>
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Publish"}
+            {isLoading || isUpdateLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : id ? (
+              "Update"
+            ) : (
+              "Publish"
+            )}
           </Button>
           <a href="/">
             <Button size="large">Cancel</Button>

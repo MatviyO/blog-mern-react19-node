@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { FetchTagsResponse } from "../posts/postsType";
 
 export const tagsApi = createApi({
   reducerPath: "tagsApi",
@@ -7,10 +8,11 @@ export const tagsApi = createApi({
     baseUrl: "http://localhost:4444/",
   }),
   endpoints: (builder) => ({
-    fetchPosts: builder.query<string[], void>({
+    fetchTags: builder.query<string[], void>({
       query: () => "tags",
+      transformResponse: (response: FetchTagsResponse) => response.result,
     }),
   }),
 });
 
-export const { useFetchPostsQuery: useFetchTagsQuery } = tagsApi;
+export const { useFetchTagsQuery } = tagsApi;

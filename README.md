@@ -18,6 +18,7 @@ Welcome to the **Blog-MERN-React19-Node** project! This is a modern web applicat
 - **Vite**: Experience fast development with Vite, a next-generation frontend tooling.
 - **RTK Query & Axios**: Manage server state efficiently with RTK Query and handle HTTP requests with Axios.
 - **Rich Text Editor**: Provide a powerful editor for creating and editing blog posts with rich formatting options.
+- **Markdown**: Provide for editor 
 - **TypeScript**: Write safer and more predictable code with TypeScript on both the frontend and backend.
 
 - **Node.js & Express**: Create a robust backend API with Node.js and Express, ensuring scalability and performance.

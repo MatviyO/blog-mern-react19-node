@@ -7,10 +7,13 @@ import EyeIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 
 import { Link } from "react-router-dom";
+import { _ } from "react-hook-form/dist/__typetest__/__fixtures__";
+import { CircularProgress } from "@mui/material";
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
 import { PostSkeleton } from "./Skeleton";
 import { IAuthor } from "../../cores/types/IAuthor";
+import { useDeletePostMutation, useFetchPostByIdQuery } from "../../redux/services/posts/postsApi";
 
 type PostProps = {
   item: {
@@ -38,12 +41,17 @@ export const Post: FC<PostProps> = ({
   commentsCount,
 }) => {
   const { _id, title, createdAt, imageUrl, author, viewsCount, tags } = item;
+  const [deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation(_id);
 
   if (isLoading) {
     return <PostSkeleton />;
   }
 
-  const onClickRemove = () => {};
+  const onClickRemove = () => {
+    if (window.confirm("Are u sure wont to delete?")) {
+      deletePost(_id);
+    }
+  };
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
@@ -54,13 +62,18 @@ export const Post: FC<PostProps> = ({
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton onClick={onClickRemove} color="secondary">
-            <DeleteIcon />
-          </IconButton>
+          {isDeleteLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            <IconButton onClick={onClickRemove} color="secondary">
+              <DeleteIcon />
+            </IconButton>
+          )}
         </div>
       )}
       {imageUrl && (
         <img
+          style={{ width: "100%", height: 300, objectFit: "contain" }}
           className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
           src={imageUrl}
           alt={title}

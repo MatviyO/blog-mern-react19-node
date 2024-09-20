@@ -17,7 +17,6 @@ export const TagsBlock: FC<Props> = () => {
   const { data: items, isLoading } = useFetchTagsQuery();
 
   if (isLoading) return <Skeleton width="100%" height={55} />;
-  if (!items?.length) return <Skeleton width="100%" height={55} />;
   return (
     <SideBlock title="Tags">
       <List>
