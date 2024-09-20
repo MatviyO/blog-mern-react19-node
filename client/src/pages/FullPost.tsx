@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { Post, Index, CommentsBlock } from "../components";
 import { useFetchPostByIdQuery } from "../redux/services/posts/postsApi";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 
 export const FullPost: FC = (): JSX.Element => {
   const params = useParams();
