@@ -153,6 +153,13 @@ PostController.delete('/:id', authenticationGuard, async (req: Request, res: Res
                 message: 'Post not found',
             });
         }
+
+        res.status(200).json({
+            success: true,
+            result: post,
+            status: 200,
+            message: 'Successfully',
+        });
     } catch (error) {
         res.status(500).json({
             success: false,

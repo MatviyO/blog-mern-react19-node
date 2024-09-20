@@ -41,7 +41,28 @@ export const postsApi = createApi({
       }),
       invalidatesTags: [{ type: "posts", id: "LIST" }],
     }),
+    deletePost: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `posts/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "posts", id }],
+    }),
+    updatePost: builder.mutation<IPost, { id: string; data: Partial<IPostForm> }>({
+      query: ({ id, data }) => ({
+        url: `posts/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "posts", id }],
+    }),
   }),
 });
 
-export const { useFetchPostsQuery, useFetchPostByIdQuery, useCreatePostMutation } = postsApi;
+export const {
+  useUpdatePostMutation,
+  useFetchPostsQuery,
+  useFetchPostByIdQuery,
+  useCreatePostMutation,
+  useDeletePostMutation,
+} = postsApi;
