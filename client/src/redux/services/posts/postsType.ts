@@ -8,3 +8,7 @@ export interface FetchPostsResponse extends IBaseResponse {
 export interface FetchPostResponse extends IBaseResponse {
   result: IPost;
 }
+
+export interface FetchTagsResponse extends IBaseResponse {
+  result: string[];
+}
