@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import expressWinston from 'express-winston';
 import cors from 'cors';
 import multer from 'multer';
+import fs from 'fs';
 
 import logger from './logger/winstonLogger.ts';
 import {authenticationGuard} from "./utils/authenticationGuard.ts";
@@ -23,6 +24,9 @@ const port = 4444;
 // init storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        if ( !fs.existsSync('uploads') ) {
+            fs.mkdirSync('uploads');
+        }
         cb(null, 'uploads');
     },
     filename: (req, file, cb) => {
